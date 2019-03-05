@@ -1,0 +1,76 @@
+<!-- loading -->
+<view class="handle-load" style="z-index:{{$LOADING.zIndex}}" wx:if="{{$LOADING}}">
+  <view class="handle-load-box" style="color:{{$LOADING.color}}">
+    <view class="handle-load-box-bg" style="background:{{$LOADING.background}}"></view>
+    <view class="handle-load-spinner">
+      <view 
+        wx:for="{{[1, 2, 3]}}"
+        wx:key="*this"
+        class="handle-load-spinner-container handle-load-container{{item}}">
+        <view
+          wx:for="{{[1, 2, 3, 4]}}"
+          wx:key="*this"
+          class="handle-load-spinner-circle handle-load-circle{{item}}"></view>
+      </view>
+    </view>
+    <view class="handle-load-text" wx:if="{{$LOADING.content}}">{{$LOADING.content}}</view>
+  </view>
+</view>
+
+<!-- toast -->
+<view class="handle-toast-box" style="z-index:{{$TOAST[$TOAST.length-1].zIndex}}" wx:if="{{$TOAST}}">
+  <view
+    wx:for='{{$TOAST}}'
+    wx:key='id'
+    class="handle-toast {{item.hide ? 'hideout' : ''}}">
+    {{item.content}}
+  </view>
+</view>
+
+<!-- confirm -->
+<view class="handle-confirm-box"
+  style="z-index:{{item.zIndex}}"
+  wx:for="{{$CONFIRM}}"
+  wx:key="id">
+  <view class="handle-confirm-transform">
+    <view class="handle-confirm {{item.hide ? 'hideout' : ''}}">
+      <view class="handle-confirm-text">
+        <view class="handle-confirm-title">{{item.title}}</view>
+        <view class="handle-confirm-content-box">
+          <view class="handle-confirm-content">{{item.content}}</view>
+        </view>
+      </view>
+      <view class="handle-confirm-btns">
+        <view class="handle-cancel-btn" data-type="cancel"
+          style="color:{{item.cancelColor}}"
+          catchtap="$handleConfirm"
+          data-i="{{index}}">
+          {{item.cancelText}}
+        </view>
+        <view class="handle-confirm-btn" data-type="confirm"
+          style="color:{{item.confirmColor}}"
+          catchtap="$handleConfirm"
+          data-i="{{index}}"
+          wx:if="{{!item.authorize}}">
+          {{item.confirmText}}
+        </view>
+        <button class="handle-confirm-btn" data-type="confirm"
+          open-type='getUserInfo'
+          style="color:{{item.confirmColor}}"
+          bindgetuserinfo="$handleConfirm"
+          data-i="{{index}}"
+          wx:if="{{item.authorize === 'userInfo'}}">
+          {{item.confirmText}}
+        </button>
+        <button class="handle-confirm-btn" data-type="confirm"
+          open-type='getPhoneNumber'
+          style="color:{{item.confirmColor}}"
+          bindgetphonenumber="$handleConfirm"
+          data-i="{{index}}"
+          wx:if="{{item.authorize === 'phoneNumber'}}">
+          {{item.confirmText}}
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

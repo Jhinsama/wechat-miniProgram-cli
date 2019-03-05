@@ -1,0 +1,114 @@
+.handle-confirm-box {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.handle-confirm-transform {
+  position: absolute;
+  right: 50%;
+  bottom: 50%;
+  transform: translate(50%, 50%);
+}
+
+.handle-confirm {
+  width: 600rpx;
+  text-align: center;
+  line-height: 1.5;
+  white-space: nowrap;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 50rpx rgba(0, 0, 0, .1);
+  animation: PopupZoomIn 300ms;
+}
+
+.handle-confirm.hideout {
+  animation: PopupZoomOut 150ms;
+  animation-fill-mode: forwards;
+}
+
+.handle-confirm-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 120rpx;
+  padding: 30rpx;
+}
+
+.handle-confirm-title {
+  flex-shrink: 0;
+  padding-bottom: 5px;
+  max-width: 11em;
+  color: #000;
+  font-size: 18px;
+  white-space: nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+
+.handle-confirm-content-box {
+  flex-grow: 1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  max-height: 250px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.handle-confirm-content {
+  color: #666666;
+  font-size: 14px;
+  white-space: normal;
+  word-break: break-all;
+}
+
+.handle-confirm-btns {
+  display: flex;
+  position: relative;
+}
+
+.handle-confirm-btns:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  width: 100%;
+  height: 1px;
+  background: #dfdfdf;
+  transform: scaleY(.5);
+}
+
+.handle-cancel-btn,
+.handle-confirm-btn {
+  flex-grow: 1;
+  position: relative;
+  width: 50%;
+  height: 90rpx;
+  padding: 0 1em;
+  font-size: 16px;
+  line-height: 90rpx;
+  white-space: nowrap;
+  text-overflow:ellipsis;
+  background: transparent;
+  box-sizing: border-box;
+  overflow:hidden;
+}
+
+.handle-cancel-btn:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -2px;
+  width: 4px;
+  height: 100%;
+  background: #dfdfdf;
+  transform: scaleX(.125);
+}
+
+.handle-confirm-btn:after {
+  content: normal;
+}

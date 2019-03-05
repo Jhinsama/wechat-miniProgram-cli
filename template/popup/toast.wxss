@@ -1,0 +1,39 @@
+.handle-toast-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  right: 50%;
+  bottom: 50%;
+  max-width: 70%;
+  max-height: 100%;
+  transform: translate(50%, 50%);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.handle-toast {
+  margin: 2px 0;
+  padding: 12rpx 30rpx;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  word-break: break-all;
+  background: rgba(0, 0, 0, .5);
+  border-radius: 3px;
+  animation: PopupZoomIn 300ms;
+}
+
+.handle-toast.hideout {
+  animation: PopupZoomOut 300ms;
+  animation-fill-mode: forwards;
+}
+
+.handle-toast:first-child {
+  margin-top: 0;
+}
+
+.handle-toast:last-child {
+  margin-bottom: 0;
+}

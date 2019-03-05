@@ -1,0 +1,22 @@
+@import './template/popup/index.wxss';
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
+}
+
+.ellipsis{
+  white-space: nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+
+/* 两行显示省略号 */
+.line-clamp{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
