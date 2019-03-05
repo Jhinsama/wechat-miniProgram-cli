@@ -22,7 +22,7 @@ const defaultConfirm = {
   cancelColor: '#000000', // String   取消按钮的文字颜色
   confirmText: '确定',    // String   确认按钮的文字
   confirmColor: '#85c56e',// String   确认按钮的文字颜色
-  callback: null          // Function 点击按钮后的回调函数
+  callback: null          // Function 点击按钮后的回调函数 函数返参为false时将不自动关闭弹框
 }
 
 // 弹出提示
