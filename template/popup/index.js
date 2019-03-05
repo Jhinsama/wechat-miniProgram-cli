@@ -179,7 +179,7 @@ export function $authorizeUserInfo (options = {}) {
       authorize: 'userInfo',
       callback: res => {
         if (res.confirm) {
-          if (res.detail.errMsg === 'getUserInfo:fail auth deny') return false
+          if (res.detail.errMsg !== 'getUserInfo:ok') return false
           else return resolve(res.detail)
         }
       }
@@ -198,7 +198,7 @@ export function $authorizePhoneNumber (options = {}) {
       authorize: 'phoneNumber',
       callback: res => {
         if (res.confirm) {
-          if (res.detail.errMsg === 'getPhoneNumber:fail user deny') return false
+          if (res.detail.errMsg !== 'getPhoneNumber:ok') return false
           else return resolve(res.detail)
         }
       }
