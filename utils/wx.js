@@ -65,15 +65,52 @@ export function wxAuthorize(scope) {
 }
 
 // -------------------------------------------------------------------------------- 图片
+// 在新页面中全屏预览图片
+export function wxPreviewImage(options = {}) {
+  return new Promise((resolve, reject) => {
+    wx.previewImage(Object.assign(options, {
+      complete(res) {
+        if (res.errMsg === 'previewImage:ok') resolve()
+        else reject(res.errMsg)
+      }
+    }))
+  })
+}
+
 // 从本地相册选择图片或使用相机拍照
 export function wxChooseImage(options = {}) {
   return new Promise((resolve, reject) => {
-    wx.chooseImage(Object.assign({
+    wx.chooseImage(Object.assign(options, {
       complete(res) {
         if (res.errMsg === 'chooseImage:ok') resolve(res.tempFiles)
         else reject(res.errMsg)
       }
-    }, options))
+    }))
+  })
+}
+
+// 获取图片信息
+export function wxGetImageInfo(src) {
+  return new Promise((resolve, reject) => {
+    wx.getImageInfo({
+      src,
+      complete(res) {
+        if (res.errMsg === 'getImageInfo:ok') resolve(res)
+        else reject(res.errMsg)
+      }
+    })
+  })
+}
+
+// 把当前画布指定区域的内容导出生成指定大小的图片
+export function wxCanvasToTempFilePath(options) {
+  return new Promise((resolve, reject) => {
+    wx.canvasToTempFilePath(Object.assign(options, {
+      complete(res) {
+        if (res.errMsg === 'canvasToTempFilePath:ok') resolve(res.tempFilePath)
+        else reject(res.errMsg)
+      }
+    }))
   })
 }
 
@@ -81,7 +118,7 @@ export function wxChooseImage(options = {}) {
 // 发起 HTTPS 网络请求
 export function wxRequest(options) {
   return new Promise((resolve, reject) => {
-    wx.request(Object.assign({
+    wx.request(Object.assign(options, {
       complete(res) {
         console.group('wx.request.url: ' + options.url)
         console.log(options)
@@ -93,43 +130,45 @@ export function wxRequest(options) {
           else resolve(res.data)
         } else reject('发起网络请求失败')
       }
-    }, options))
+    }))
   })
 }
 
 // 将本地资源上传到服务器
 export function wxUploadFile(options) {
   return new Promise((resolve, reject) => {
-    let task = wx.uploadFile(Object.assign({
+    let task = wx.uploadFile(Object.assign(options, {
       complete(res) {
         console.group('wx.uploadFile.url: ' + options.url)
         console.log(options)
         console.log(res)
         console.groupEnd()
-        if (res.statusCode >= 500) reject('服务器错误')
-        else if (res.statusCode >= 400) reject('请求出错')
-        else {
-          res.data = JSON.parse(res.data)
-          resolve({ task, data: res.data })
-        }
+        if (res.errMsg === 'uploadFile:ok') {
+          if (res.statusCode >= 500) reject('服务器错误')
+          else if (res.statusCode >= 400) reject('请求出错')
+          else {
+            res.data = JSON.parse(res.data)
+            resolve({ task, data: res.data })
+          }
+        } else reject('发起上传请求失败')
       }
-    }, options))
+    }))
   })
 }
 
 // 调起微信支付 需要的参数 timeStamp nonceStr package paySign
 export function wxRequestPayment(data, signType = 'MD5') {
   return new Promise((resolve, reject) => {
-    wx.requestPayment(Object.assign({
+    wx.requestPayment(Object.assign(data, {
       signType,
       complete(res) {
         console.group('wx.requestPayment')
         console.log(data)
         console.groupEnd()
-        if (res.errMsg === 'requestPayment:ok') resolve()
+        if (res.errMsg === 'requestPayment:ok') resolve(true)
         else reject(res.errMsg)
       }
-    }, data))
+    }))
   })
 }
 
@@ -186,7 +225,7 @@ export function wxNavigateTo(url) {
   })
 }
 
-// 保留当前页面 跳转到应用内的某个页面
+// 关闭当前页面 返回上一页面或多级页面
 export function wxNavigateBack(delta = 1) {
   return new Promise((resolve, reject) => {
     wx.navigateBack({
@@ -232,14 +271,14 @@ export function wxPageScrollTo(scrollTop, duration) {
 // 使用微信内置地图查看位置
 export function wxOpenLocation(latitude, longitude, options) {
   return new Promise((resolve, reject) => {
-    wx.openLocation(Object.assign({
+    wx.openLocation(Object.assign(options, {
       latitude,
       longitude,
       complete(res) {
         if (res.errMsg === 'openLocation:ok') resolve()
         else reject(res.errMsg)
       }
-    }, options))
+    }))
   })
 }
 
@@ -298,6 +337,7 @@ export function wxGetClipboardData() {
 // -------------------------------------------------------------------------------- 电话
 // 拨打电话
 export function wxMakePhoneCall(phoneNumber) {
+  phoneNumber = phoneNumber.toString()
   return new Promise((resolve, reject) => {
     wx.makePhoneCall({
       phoneNumber,
@@ -311,15 +351,41 @@ export function wxMakePhoneCall(phoneNumber) {
 
 // -------------------------------------------------------------------------------- 扫码
 // 调起客户端扫码界面进行扫码
-export function wxScanCode(onlyFromCamera = false, scanType = ['barCode', 'qrCode']) {
+export function wxScanCode(options = {}) {
   return new Promise((resolve, reject) => {
-    wx.scanCode({
-      scanType,
-      onlyFromCamera,
+    wx.scanCode(Object.assign(options, {
       complete(res) {
         if (res.errMsg === 'scanCode:ok') resolve(res)
+        else reject(res.errMsg)
+      }
+    }))
+  })
+}
+
+// -------------------------------------------------------------------------------- 界面
+// 显示 tabBar 某一项的右上角的红点
+export function wxShowTabBarRedDot(index) {
+  return new Promise((resolve, reject) => {
+    wx.showTabBarRedDot({
+      index,
+      complete(res) {
+        if (res.errMsg === 'showTabBarRedDot:ok') resolve(res)
         else reject(res.errMsg)
       }
     })
   })
 }
+
+// 隐藏 tabBar 某一项的右上角的红点
+export function wxHideTabBarRedDot(index) {
+  return new Promise((resolve, reject) => {
+    wx.hideTabBarRedDot({
+      index,
+      complete(res) {
+        if (res.errMsg === 'hideTabBarRedDot:ok') resolve(res)
+        else reject(res.errMsg)
+      }
+    })
+  })
+}
+

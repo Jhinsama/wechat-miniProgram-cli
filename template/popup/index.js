@@ -1,18 +1,55 @@
-import { getNowPage } from '../../utils/app'
+// 获取当前页面实例
+function getNowPage () {
+  let pages = getCurrentPages()
+  let page = pages[pages.length - 1]
+  return page
+}
 
 const defaultZindex = 999
+
 // 提示框默认参数
 const defaultToast = {
   content: '',// String   显示的内容
   func: null, // Function 自动关闭后执行的函数
   ms: 2500    // Number   自动关闭计时
 }
+
+// 跳转方式对应的方法
+const skipTypeWithFunc = {
+  'navigate': wx.navigateTo,
+  'redirect': wx.redirectTo,
+  'switchTab': wx.switchTab,
+  'reLaunch': wx.reLaunch,
+  'navigateBack': wx.navigateBack
+}
+// 通知栏类型对应图标
+const noticeTypeWithIcon = {
+  'none': null,
+  'info': '/template/popup/icon/info.svg',
+  'success': '/template/popup/icon/success.svg',
+  'error': '/template/popup/icon/error.svg',
+  'warning': '/template/popup/icon/warning.svg',
+  'loading': '/template/popup/icon/loading.svg',
+}
+// 通知栏默认参数
+const defaultNotice = {
+  type: 'info',         // String   通知类型
+  title: '',            // String   通知栏标题
+  content: '',          // String   通知内容
+  path: '',             // String   点击通知栏跳转的路径
+  skipType: '',         // String   跳转方式
+  duration: null,       // Number   自动关闭的延时 不关闭为0
+  closable: null,       // Boolean  是否显示关闭按钮
+  onClose: null         // Function 关闭时的回调
+}
+
 // 加载框默认参数
 const defaultLoading = {
   content: '',      // 加载时的文字提示
   color: '#fff',    // 字体动画的颜色
   background: '#000'// 背景色
 }
+
 // 确认框默认参数
 const defaultConfirm = {
   title: '',              // String   提示的标题
@@ -22,7 +59,8 @@ const defaultConfirm = {
   cancelColor: '#000000', // String   取消按钮的文字颜色
   confirmText: '确定',    // String   确认按钮的文字
   confirmColor: '#85c56e',// String   确认按钮的文字颜色
-  callback: null          // Function 点击按钮后的回调函数 函数返参为false时将不自动关闭弹框
+  callback: null,         // Function 点击按钮后的回调函数 函数返参为false时将不自动关闭弹框
+  share: null             // String   分享的参数
 }
 
 // 弹出提示
@@ -45,7 +83,7 @@ export function $toast (options = {}) {
   page.ToastQueue.push(item)
   page.setData({ $TOAST: page.ToastQueue })
 
-  let close = function $close (next = true) {
+  let close = function $close (next = true) { // next:是否执行传入的Function
     if (!close) return false
     close = null
     item.hide = true
@@ -65,6 +103,73 @@ export function $toast (options = {}) {
     return close
   } else {
     let timer = setTimeout(close, data.ms)
+    return function $CLOSE (next = true) {
+      if (!close) return false
+      clearTimeout(timer)
+      close(next)
+      timer = null
+    }
+  }
+}
+
+// 通知栏点击事件
+function noticeTap (e) {
+  let dataset = e.currentTarget.dataset
+  let index = dataset.i
+  let type = dataset.type
+  let item = this.data.$NOTICE[index]
+  if (type === 'skip' && item.path) skipTypeWithFunc[item.skipType]({ url: item.path })
+  item.close()
+}
+// 弹出通知
+export function $notice (options = {}) {
+  let page = getNowPage()
+
+  if (!page.NoticeId) page.NoticeId = 0
+  if (!page.CSSzIndex) page.CSSzIndex = 0
+  if (!page.NoticeQueue) page.NoticeQueue = []
+  if (!page.$handleNoticeTap) page.$handleNoticeTap = noticeTap
+
+  let data = Object.assign({}, defaultNotice, options instanceof Object ? options : { title: options || '' })
+  if (!noticeTypeWithIcon[data.type]) data.type = 'none'
+  if (data.closable === true && data.duration === null) data.duration = 0
+  if (data.duration === 0 && data.closable === null) data.closable = true
+  if (data.path && !skipTypeWithFunc[data.skipType]) data.skipType = 'navigate'
+  if (data.path && data.duration === null && data.closable === null) data.closable = true, data.duration = 0
+
+  page.NoticeId++
+  page.CSSzIndex++
+  let item = Object.assign({}, data, {
+    id: page.NoticeId,
+    zIndex: page.CSSzIndex + defaultZindex,
+    icon: noticeTypeWithIcon[data.type]
+  })
+
+  let close = function $close (next = true) {
+    if (!close) return false
+    close = null
+    item.hide = true
+    page.setData({ $NOTICE: page.NoticeQueue })
+    setTimeout(() => {
+      let index = page.NoticeQueue.indexOf(item)
+      page.NoticeQueue.splice(index, 1)
+      let $NOTICE = !page.NoticeQueue.length ? null : page.NoticeQueue
+      if (!$NOTICE) page.NoticeId = 0
+      page.setData({ $NOTICE })
+      if (next && item.onClose) item.onClose()
+      page = data = item = null
+    }, 200)
+  }
+
+  item.close = close
+  page.NoticeQueue.forEach(item => item.hide ? null : item.close())
+  page.NoticeQueue.push(item)
+  page.setData({ $NOTICE: page.NoticeQueue })
+
+  if (item.duration === 0) {
+    return close
+  } else {
+    let timer = setTimeout(close, item.duration || 5000)
     return function $CLOSE (next = true) {
       if (!close) return false
       clearTimeout(timer)
@@ -111,7 +216,6 @@ function confirmTap (e) {
   let index = dataset.i
   let type = dataset.type
   let item = this.data.$CONFIRM[index]
-  // if (item.hide) return false
   item.callback({
     confirm: type === 'confirm',
     cancel: type === 'cancel',

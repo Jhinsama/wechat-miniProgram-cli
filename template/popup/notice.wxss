@@ -1,0 +1,103 @@
+.handle-notice-box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 999999;
+}
+
+.handle-notice-transform {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20rpx 30rpx;
+  text-align: center;
+  box-sizing: border-box;
+  animation: PopupDownIn 300ms;
+}
+
+.handle-notice-transform.hideout {
+  animation: PopupUpZoomOut 300ms;
+  animation-fill-mode: forwards;
+}
+
+.handle-notice {
+  display: inline-block;
+  min-width: 60%;
+  max-width: 100%;
+  padding-bottom: 14rpx;
+  text-align: left;
+  background: #fff;
+  box-shadow: 0 10rpx 50rpx rgba(0, 0, 0, .1);
+  border-radius: 5px;
+}
+
+.handle-notice-head {
+  width: 100%;
+  padding: 20rpx 30rpx 6rpx;
+  box-sizing: border-box;
+}
+
+.handle-notice-title {
+  position: relative;
+  width: 100%;
+  padding-right: 30px;
+  color: #17233d;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow:ellipsis;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.handle-notice-head.show-icon .handle-notice-title {
+  padding-left: 23px;
+}
+
+.handle-notice-icon {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  padding-top: 2px;
+  box-sizing: content-box;
+}
+
+.handle-notice-head.show-icon .handle-notice-icon {
+  display: block;
+}
+
+.handle-notice-close {
+  display: none;
+  position: absolute;
+  top: -20rpx;
+  right: -30rpx;
+  width: 20px;
+  height: 20px;
+  padding: 20rpx 30rpx;
+  box-sizing: content-box;
+}
+
+.handle-notice-head.show-close .handle-notice-close {
+  display: block;
+}
+
+
+.handle-notice-content {
+  padding: 6rpx 30rpx;
+  color: #515a6e;
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: justify;
+  word-break: break-all;
+}
+
+.handle-notice-text.has-icon {
+  padding: 0 23px;
+}

@@ -8,6 +8,12 @@ Page({
     num++
     app.$toast('这是一个提示 ' + num)
   },
+  showNotice() {
+    app.$notice({
+      title: '显示通知栏',
+      content: '这里是通知内容 这里是通知内容 这里是通知内容 这里是通知内容'
+    })
+  },
   showConfirm() {
     app.$confirm({
       title: '测试',

@@ -1,5 +1,6 @@
 <view class="box">
   <view class="btn" catchtap="showToast" style="position: relative; z-index: 9999;">显示提示框</view>
+  <view class="btn" catchtap="showNotice" style="position: relative; z-index: 9999;">显示通知栏</view>
   <view class="btn" catchtap="showConfirm" style="position: relative; z-index: 9999;">显示模态框</view>
   <view class="btn" catchtap="showLoading" style="position: relative; z-index: 9999;">显示加载动画</view>
   <view class="btn" catchtap="showUserInfo">显示用户信息授权弹窗</view>
